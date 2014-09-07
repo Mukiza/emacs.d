@@ -87,13 +87,20 @@
 (eval-after-load "auto-complete"
   '(add-to-list 'ac-modes 'cider-mode))
 
-
 (require 'icomplete)
+
 (setq cider-repl-wrap-history t)
 (setq cider-repl-history-size 1000)
-(setq cider-repl-result-prefix ";; => ")
+
 (setq cider-stacktrace-fill-column 80)
+
+;; prefix output with ;;=> in the repl
+(setq cider-repl-result-prefix ";; => ")
+
+;; stop stack trace from opening a new buffer
 (setq cider-show-error-buffer nil)
+
+;; pretty color in the repl :-( Not working yet
 (setq cider-repl-use-clojure-font-lock t)
 
 ;;enable projectile mode
@@ -122,3 +129,13 @@
 
 ;; new line and indent
 (define-key global-map (kbd "RET") 'newline-and-indent)
+
+;; enable line numbers
+(global-linum-mode 1)
+
+;;add some padding between line numbers and text
+(defun linum-format-func (line)
+  (let ((w (length (number-to-string (count-lines (point-min) (point-max))))))
+     (propertize (format (format "%%%dd " w) line) 'face 'linum)))
+
+(setq linum-format 'linum-format-func)
