@@ -139,3 +139,6 @@
      (propertize (format (format "%%%dd " w) line) 'face 'linum)))
 
 (setq linum-format 'linum-format-func)
+
+;; turn on ido-mode by default
+(ido-mode t)
