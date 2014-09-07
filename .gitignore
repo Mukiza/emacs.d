@@ -30,4 +30,6 @@ tramp
 
 # AUCTeX auto folder
 /auto/
-
+ac-comphist.dat
+projectile-bookmarks.eld
+themes
