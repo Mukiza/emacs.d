@@ -38,7 +38,11 @@
                       clojure-cheatsheet
                       rainbow-mode
                       clj-refactor
+                      magit
+                      magit-push-remote
                       grizzl
+                      evil
+                      nodejs-repl
                       midje-mode))
 
 (dolist (p site-packages)
@@ -113,25 +117,25 @@
 
 
 ;; highlight text selection (on by default since emacs 23.2)
-(transient-mark-mode 1)
+(transient-mark-mode t)
 
 ;; make typing overwrite text selection
-(delete-selection-mode 1)
+(delete-selection-mode t)
 
 ;; turn on highlight matching brackets when cursor is on one
-(show-paren-mode 1)
+(show-paren-mode t)
 
  ; highlight just brackets
 (setq show-paren-style 'parenthesis)
 
 ;; electric pair for lisp parens
-(electric-pair-mode 1)
+(electric-pair-mode t)
 
 ;; new line and indent
 (define-key global-map (kbd "RET") 'newline-and-indent)
 
 ;; enable line numbers
-(global-linum-mode 1)
+(global-linum-mode t)
 
 ;;add some padding between line numbers and text
 (defun linum-format-func (line)
@@ -142,3 +146,34 @@
 
 ;; turn on ido-mode by default
 (ido-mode t)
+
+(evil-mode t)
+
+;; haskell-mode cute symbols
+(setq haskell-font-lock-symbols t)
+
+;; enable pretty mode for clojure
+(add-hook 'clojure-mode-hook 'pretty-mode)
+
+; ;; pretty greek symbols
+(defun pretty-greek ()
+  (let ((greek '("alpha" "beta" "gamma" "delta" "epsilon" "zeta" "eta" "theta" "iota" "kappa" "lambda" "mu" "nu" "xi" "omicron" "pi" "rho" "sum" "sigma" "tau" "upsilon" "phi" "chi" "psi" "omega")))
+    (loop for word in greek
+          for code = 97 then (+ 1 code)
+          do  (let ((greek-char (make-char 'greek-iso8859-7 code)))
+                (font-lock-add-keywords nil
+                  `((,(concatenate 'string "\\(^\\|[^a-zA-Z0-9]\\)\\(" word "\\)[a-zA-Z]")
+                    (0 (progn (decompose-region (match-beginning 2) (match-end 2)) nil)))))
+                (font-lock-add-keywords nil
+                                        `((,(concatenate 'string "\\(^\\|[^a-zA-Z0-9]\\)\\(" word "\\)[^a-zA-Z]")
+                                           (0 (progn (compose-region (match-beginning 2) (match-end 2) ,greek-char)
+                                            nil)))))))))
+
+
+;; set all lispy langs for all lispy langs and haskell mode
+(add-hook 'lisp-mode-hook 'pretty-greek)
+(add-hook 'emacs-lisp-mode-hook 'pretty-greek)
+
+;(add-hook 'clojure-mode-hook 'pretty-greek)
+(add-hook 'haskell-mode-hook 'pretty-greek)
+
