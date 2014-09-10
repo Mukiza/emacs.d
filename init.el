@@ -43,7 +43,9 @@
                       grizzl
                       evil
                       nodejs-repl
-                      midje-mode))
+                      midje-mode
+                      flymake-jslint
+                      web-beautify))
 
 (dolist (p site-packages)
   (unless (package-installed-p p)
@@ -155,25 +157,21 @@
 ;; enable pretty mode for clojure
 (add-hook 'clojure-mode-hook 'pretty-mode)
 
-; ;; pretty greek symbols
-(defun pretty-greek ()
-  (let ((greek '("alpha" "beta" "gamma" "delta" "epsilon" "zeta" "eta" "theta" "iota" "kappa" "lambda" "mu" "nu" "xi" "omicron" "pi" "rho" "sum" "sigma" "tau" "upsilon" "phi" "chi" "psi" "omega")))
-    (loop for word in greek
-          for code = 97 then (+ 1 code)
-          do  (let ((greek-char (make-char 'greek-iso8859-7 code)))
-                (font-lock-add-keywords nil
-                  `((,(concatenate 'string "\\(^\\|[^a-zA-Z0-9]\\)\\(" word "\\)[a-zA-Z]")
-                    (0 (progn (decompose-region (match-beginning 2) (match-end 2)) nil)))))
-                (font-lock-add-keywords nil
-                                        `((,(concatenate 'string "\\(^\\|[^a-zA-Z0-9]\\)\\(" word "\\)[^a-zA-Z]")
-                                           (0 (progn (compose-region (match-beginning 2) (match-end 2) ,greek-char)
-                                            nil)))))))))
+(require 'purty-mode)
+(purty-add-pair '("\\(\\bfunction\\b\\)" . "ƒ"))
+(add-hook 'js-mode-hook #'purty-mode)
+(setq js-indent-level 4)
 
+(setq-default indent-tabs-mode nil)
 
-;; set all lispy langs for all lispy langs and haskell mode
-(add-hook 'lisp-mode-hook 'pretty-greek)
-(add-hook 'emacs-lisp-mode-hook 'pretty-greek)
+(add-hook 'clojure-mode-hook 'purty-mode)
+(add-hook 'emacs-lisp-mode-hook 'purty-mode)
+(add-hook 'lisp-mode-hook 'purty-mode)
+(add-hook 'haskell-mode-hook 'purty-mode)
 
-;(add-hook 'clojure-mode-hook 'pretty-greek)
-(add-hook 'haskell-mode-hook 'pretty-greek)
+(require 'flymake-jslint)
+(add-hook 'js-mode-hook 'flymake-jslint-load)
 
+(define-key global-map (kbd "C-c b j") 'web-beautify-js)
+(define-key global-map (kbd "C-c b c") 'web-beautify-css)
+(define-key global-map (kbd "C-c b h") 'web-beautify-html)
