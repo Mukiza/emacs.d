@@ -1,26 +1,16 @@
-(require 'package)
+;;; package --- Summary
+;;; Commentary:
+;; These are my customisation of emacs 25.0. Cloning this in your .emacs.d/ and starting emacs will fire off installation of the default packages and boom ... you are good to go
 
+;;; Code:
+(require 'package)
 (setq package-archives '(("gnu" . "http://elpa.gnu.org/packages/")
                          ("marmalade" . "http://marmalade-repo.org/packages/")
                          ("melpa" . "http://melpa.milkbox.net/packages/")))
 (package-initialize)
 
-(add-to-list 'custom-theme-load-path "~/.emacs.d/themes")
-
-(custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(custom-safe-themes (quote ("6a37be365d1d95fad2f4d185e51928c789ef7a4ccf17e7ca13ad63a8bf5b922f" default))))
-
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- ;;(show-paren-match ((((class color) (background light)) (:background "azure2"))))
- )
+(when (not package-archive-contents)
+  (package-refresh-contents))
 
 (defvar site-packages '(projectile
                       clojure-mode
@@ -28,6 +18,7 @@
                       sml-mode
                       haskell-mode
                       rainbow-delimiters
+                      solarized-theme
                       ac-cider
                       auto-complete
                       company
@@ -36,7 +27,6 @@
                       smart-mode-line
                       clojure-snippets
                       clojure-cheatsheet
-                      rainbow-mode
                       clj-refactor
                       magit
                       magit-push-remote
@@ -44,28 +34,70 @@
                       evil
                       nodejs-repl
                       midje-mode
+                      auto-complete
+                      ghci-completion
+                      ghc
+                      flycheck
+                      flycheck-color-mode-line
+                      flycheck-hdevtools
                       flymake-jslint
-                      web-beautify))
+                      android-mode
+                      expand-region
+                      web-beautify
+                      purty-mode
+                      yasnippet
+                      ruby-mode
+                      slim-mode
+                      haml-mode
+                      multiple-cursors
+                      dash))
 
 (dolist (p site-packages)
   (unless (package-installed-p p)
     (package-install p)))
 
-(tool-bar-mode -1)
-(menu-bar-mode -1)
+(setenv "PATH" (concat (getenv "PATH") ":/usr/local/bin"))
+(setenv "PATH" (concat (getenv "PATH") ":~/.cabal/bin/"))
+
+(setq exec-path (append exec-path '("/usr/local/bin")))
+(setq exec-path (append exec-path '("~/.cabal/bin/")))
+
+(if window-system
+    (tool-bar-mode -1))
+
+(if (not window-system)
+    (menu-bar-mode -1))
+
 (scroll-bar-mode -1)
 
-;; Cider and clojure mode
+
+;; enable line numbers
+(global-linum-mode t)
+
+;;add some padding between line numbers and text
+
+(defun linum-format-func (line)
+  (let ((w (length (number-to-string (count-lines (point-min) (point-max))))))
+     (propertize (format (format "%%%dd " w) line) 'face 'linum)))
+
+(setq linum-format 'linum-format-func)
+
+; (server-start)
+
+;; haskell-mode cute symbols
+(setq haskell-font-lock-symbols t)
+
+;; clojure rainbow delimeters
+(add-hook 'clojure-mode-hook 'rainbow-delimiters-mode)
+
 (add-hook 'cider-mode-hook 'cider-turn-on-eldoc-mode)
 (setq nrepl-hide-special-buffers t)
 (add-hook 'cider-repl-mode-hook 'paredit-mode)
 (add-hook 'cider-repl-mode-hook 'rainbow-delimiters-mode)
 
 ;; clojure snippets
-(add-hook 'clojure-mode-hook '(lambda () (yas/minor-mode-on)))
-
-;;enable rainbow delimeters
-(global-rainbow-delimiters-mode)
+; (add-hook 'clojure-mode-hook
+;            '(lambda () (yas/minor-mode-on)))
 
 (add-hook 'prog-mode-hook  'rainbow-delimiters-mode)
 (add-hook 'cider-repl-mode-hook 'rainbow-delimiters-mode)
@@ -106,20 +138,16 @@
 ;; stop stack trace from opening a new buffer
 (setq cider-show-error-buffer nil)
 
-;; pretty color in the repl :-( Not working yet
+;; pretty color in the repl Not working yet
 (setq cider-repl-use-clojure-font-lock t)
 
 ;;enable projectile mode
 (projectile-global-mode)
-(setq projectile-completion-system 'grizzl)
-
-;; Smart mode line
-(sml/setup)
-(load-theme 'noctilux t)
+;;(setq projectile-completion-system 'grizzl)
 
 
-;; highlight text selection (on by default since emacs 23.2)
-(transient-mark-mode t)
+(load-theme 'solarized-dark t)
+
 
 ;; make typing overwrite text selection
 (delete-selection-mode t)
@@ -127,14 +155,14 @@
 ;; turn on highlight matching brackets when cursor is on one
 (show-paren-mode t)
 
- ; highlight just brackets
+ ;; highlight just brackets
 (setq show-paren-style 'parenthesis)
 
 ;; electric pair for lisp parens
 (electric-pair-mode t)
 
 ;; new line and indent
-(define-key global-map (kbd "RET") 'newline-and-indent)
+;;(define-key global-map (kbd "RET") 'newline-and-indent)
 
 ;; enable line numbers
 (global-linum-mode t)
@@ -154,8 +182,6 @@
 ;; haskell-mode cute symbols
 (setq haskell-font-lock-symbols t)
 
-;; enable pretty mode for clojure
-(add-hook 'clojure-mode-hook 'pretty-mode)
 
 (require 'purty-mode)
 (purty-add-pair '("\\(\\bfunction\\b\\)" . "ƒ"))
@@ -164,6 +190,7 @@
 
 (setq-default indent-tabs-mode nil)
 
+;; purty mode
 (add-hook 'clojure-mode-hook 'purty-mode)
 (add-hook 'emacs-lisp-mode-hook 'purty-mode)
 (add-hook 'lisp-mode-hook 'purty-mode)
@@ -175,3 +202,44 @@
 (define-key global-map (kbd "C-c b j") 'web-beautify-js)
 (define-key global-map (kbd "C-c b c") 'web-beautify-css)
 (define-key global-map (kbd "C-c b h") 'web-beautify-html)
+
+(require 'auto-complete)
+
+(add-hook 'after-init-hook 'global-flycheck-mode)
+(setq flycheck-check-syntax-automatically '(mode-enabled idle-change))
+
+(setq flycheck-display-errors-delay 0)
+
+(add-hook 'haskell-mode-hook 'turn-on-haskell-indentation)
+
+(autoload 'ghc-init "ghc" nil t)
+
+(add-hook 'haskell-mode-hook
+      (lambda ()
+        (ghc-init)))
+
+(ac-define-source ghc-mod
+  '((depends ghc)
+    (candidates . (ghc-select-completion-symbol))
+    (symbol . "s")
+    (cache)))
+
+(defun my-ac-haskell-mode ()
+  (setq ac-sources '(ac-source-words-in-same-mode-buffers
+             ac-source-dictionary
+             ac-source-ghc-mod)))
+
+(add-hook haskell-mode-hook 'my-ac-haskell-mode)
+
+(defun my-haskell-ac-init ()
+  (when (member (file-name-extension buffer-file-name) '("hs" "lhs"))
+    (auto-complete-mode t)
+    (setq ac-sources '(ac-source-words-in-same-mode-buffers
+               ac-source-dictionary
+               ac-source-ghc-mod))))
+
+(add-hook 'find-file-hook 'my-haskell-ac-init)
+
+(provide 'init)
+
+;;; init.el ends here
