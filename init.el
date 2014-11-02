@@ -1,6 +1,7 @@
 ;;; package --- Summary
 ;;; Commentary:
-;; These are my customisation of emacs 25.0. Cloning this in your .emacs.d/ and starting emacs will fire off installation of the default packages and boom ... you are good to go
+;; These are my customisation of emacs 25.0. Cloning this in your .emacs.d/ and starting emacs will
+;; fire off installation of the default packages and boom ... you are good to go
 
 ;;; Code:
 (require 'package)
@@ -42,6 +43,7 @@
                       flycheck-hdevtools
                       flymake-jslint
                       android-mode
+                      jedi
                       expand-region
                       web-beautify
                       purty-mode
@@ -56,20 +58,55 @@
   (unless (package-installed-p p)
     (package-install p)))
 
-(setenv "PATH" (concat (getenv "PATH") ":/usr/local/bin"))
-(setenv "PATH" (concat (getenv "PATH") ":~/.cabal/bin/"))
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(company-ghc-show-info t)
+ '(custom-enabled-themes (quote (smart-mode-line-dark monokai)))
+  '(custom-safe-themes
+    (quote
+     ("6a37be365d1d95fad2f4d185e51928c789ef7a4ccf17e7ca13ad63a8bf5b922f" "57f8801351e8b7677923c9fe547f7e19f38c99b80d68c34da6fa9b94dc6d3297" "3a727bdc09a7a141e58925258b6e873c65ccf393b2240c51553098ca93957723" default)))
+ '(haskell-process-auto-import-loaded-modules t)
+ '(haskell-process-log t)
+ '(haskell-process-suggest-remove-import-lines t)
+ '(haskell-process-type (quote cabal-repl))
+ '(haskell-tags-on-save t))
 
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ )
+
+(setenv "PATH" (concat (getenv "PATH") ":/usr/local/bin"))
 (setq exec-path (append exec-path '("/usr/local/bin")))
-(setq exec-path (append exec-path '("~/.cabal/bin/")))
+
+;;(autoload 'ansi-color-for-comint-mode-on "ansi-color" nil t)
+;;(add-hook 'shell-mode-hook 'ansi-color-for-comint-mode-on)
+;;(load-library "ansi-color")
+;;(load-library "term")
+
+;; Fix junk characters in shell-mode
+;;
+;;(add-hook 'shell-mode-hook
+;;           'ansi-color-for-comint-mode-on
+              ;;            )
+
+(eval-after-load 'shell
+  '(progn
+     (autoload 'ansi-color-for-comint-mode-on "ansi-color" nil t)
+     (add-hook 'shell-mode-hook 'ansi-color-for-comint-mode-on t)
+     t))
 
 (if window-system
     (tool-bar-mode -1))
 
 (if (not window-system)
-    (menu-bar-mode -1))
-
-(scroll-bar-mode -1)
-
+    (menu-bar-mode -1)
+    (scroll-bar-mode -1))
 
 ;; enable line numbers
 (global-linum-mode t)
@@ -95,10 +132,6 @@
 (add-hook 'cider-repl-mode-hook 'paredit-mode)
 (add-hook 'cider-repl-mode-hook 'rainbow-delimiters-mode)
 
-;; clojure snippets
-; (add-hook 'clojure-mode-hook
-;            '(lambda () (yas/minor-mode-on)))
-
 (add-hook 'prog-mode-hook  'rainbow-delimiters-mode)
 (add-hook 'cider-repl-mode-hook 'rainbow-delimiters-mode)
 
@@ -113,11 +146,6 @@
 
 (add-hook 'clojure-mode-hook (lambda () (paredit-mode +1)))
 
-(require 'auto-complete-config)
-(setq ac-delay 0.0)
-(setq ac-quick-help-delay 0.5)
-(ac-config-default)
-
 (add-hook 'cider-mode-hook 'ac-flyspell-workaround)
 (add-hook 'cider-mode-hook 'ac-cider-setup)
 (add-hook 'cider-repl-mode-hook 'ac-cider-setup)
@@ -125,8 +153,11 @@
 (eval-after-load "auto-complete"
   '(add-to-list 'ac-modes 'cider-mode))
 
-(require 'icomplete)
+;; Standard Jedi.el setting
+(add-hook 'python-mode-hook 'jedi:setup)
+(setq jedi:complete-on-dot t)
 
+(require 'icomplete)
 (setq cider-repl-wrap-history t)
 (setq cider-repl-history-size 1000)
 
@@ -145,8 +176,8 @@
 (projectile-global-mode)
 ;;(setq projectile-completion-system 'grizzl)
 
-
-(load-theme 'solarized-dark t)
+(sml/setup)
+;;(load-theme 'solarized-dark t)
 
 
 ;; make typing overwrite text selection
@@ -177,11 +208,63 @@
 ;; turn on ido-mode by default
 (ido-mode t)
 
-(evil-mode t)
-
 ;; haskell-mode cute symbols
+
 (setq haskell-font-lock-symbols t)
 
+(add-hook 'haskell-mode-hook 'turn-on-haskell-indentation)
+;;(add-hook 'haskell-mode-hook 'structured-haskell-mode)
+
+(add-hook 'haskell-mode-hook 'turn-on-hi2)
+
+;;(add-to-list 'load-path "~/.cabal/share/x86_64-osx-ghc-7.8.3/structured-haskell-mode-1.0.4/elisp")
+;;(require 'shm)
+;;(add-hook 'haskell-mode-hook 'structured-haskell-mode)
+;;(set-face-background 'shm-current-face "#eee8d5")
+;;(set-face-background 'shm-quarantine-face "lemonchiffon")
+
+(require 'auto-complete-config)
+(setq ac-delay 0.0)
+(setq ac-quick-help-delay 0.2)
+(ac-config-default)
+
+
+(require 'company)
+(add-hook 'haskell-mode-hook
+            (lambda ()
+              (set (make-local-variable 'company-backends) '(company-ghc))))
+
+(eval-after-load 'haskell-mode
+  '(define-key haskell-mode-map [f8] 'haskell-navigate-imports))
+
+(let ((my-cabal-path (expand-file-name "~/.cabal/bin")))
+  (setenv "PATH" (concat my-cabal-path ":" (getenv "PATH")))
+  (add-to-list 'exec-path my-cabal-path))
+
+(eval-after-load 'haskell-mode '(progn
+  (define-key haskell-mode-map (kbd "C-c C-l") 'haskell-process-load-or-reload)
+  (define-key haskell-mode-map (kbd "C-c C-z") 'haskell-interactive-switch)
+  (define-key haskell-mode-map (kbd "C-c C-n C-t") 'haskell-process-do-type)
+  (define-key haskell-mode-map (kbd "C-c C-n C-i") 'haskell-process-do-info)
+  (define-key haskell-mode-map (kbd "C-c C-n C-c") 'haskell-process-cabal-build)
+  (define-key haskell-mode-map (kbd "C-c C-n c") 'haskell-process-cabal)
+  (define-key haskell-mode-map (kbd "SPC") 'haskell-mode-contextual-space)))
+
+(eval-after-load 'haskell-cabal '(progn
+  (define-key haskell-cabal-mode-map (kbd "C-c C-z") 'haskell-interactive-switch)
+  (define-key haskell-cabal-mode-map (kbd "C-c C-k") 'haskell-interactive-mode-clear)
+  (define-key haskell-cabal-mode-map (kbd "C-c C-c") 'haskell-process-cabal-build)
+  (define-key haskell-cabal-mode-map (kbd "C-c c") 'haskell-process-cabal)))
+
+(eval-after-load 'haskell-mode
+  '(define-key haskell-mode-map (kbd "C-c C-o") 'haskell-compile))
+
+(eval-after-load 'haskell-cabal
+  '(define-key haskell-cabal-mode-map (kbd "C-c C-o") 'haskell-compile))
+
+(autoload 'ghc-init "ghc" nil t)
+(autoload 'ghc-debug "ghc" nil t)
+(add-hook 'haskell-mode-hook (lambda () (ghc-init) (hare-init)))
 
 (require 'purty-mode)
 (purty-add-pair '("\\(\\bfunction\\b\\)" . "ƒ"))
@@ -194,51 +277,52 @@
 (add-hook 'clojure-mode-hook 'purty-mode)
 (add-hook 'emacs-lisp-mode-hook 'purty-mode)
 (add-hook 'lisp-mode-hook 'purty-mode)
+
+;; Putry mode for haskell mode
 (add-hook 'haskell-mode-hook 'purty-mode)
 
-(require 'flymake-jslint)
-(add-hook 'js-mode-hook 'flymake-jslint-load)
+(require 'yasnippet)
+(setq yas-snippet-dirs
+      '("~/.emacs.d/custom/yasnippet/snippets"
+      	"~/.emacs.d/elpa/haskell-mode-20141023.746/snippets"))
 
-(define-key global-map (kbd "C-c b j") 'web-beautify-js)
-(define-key global-map (kbd "C-c b c") 'web-beautify-css)
-(define-key global-map (kbd "C-c b h") 'web-beautify-html)
+(yas-global-mode 1)
+;;(yas-expand-snippet )
 
-(require 'auto-complete)
 
-(add-hook 'after-init-hook 'global-flycheck-mode)
-(setq flycheck-check-syntax-automatically '(mode-enabled idle-change))
 
-(setq flycheck-display-errors-delay 0)
+(require 'multi-term)
+(setq multi-term-program "/usr/local/bin/zsh")
 
-(add-hook 'haskell-mode-hook 'turn-on-haskell-indentation)
+(defun last-term-buffer (l)
+      "Return most recently used term buffer."
+      (when l
+	(if (eq 'term-mode (with-current-buffer (car l) major-mode))
+	    (car l) (last-term-buffer (cdr l)))))
 
-(autoload 'ghc-init "ghc" nil t)
+(defun get-term ()
+   "Switch to the term buffer last used, or create a new one if
+    none exists, or if the current buffer is already a term."
+   (interactive)
+     (let ((b (last-term-buffer (buffer-list))))
+       (if (or (not b) (eq 'term-mode major-mode))
+           (multi-term)
+         (switch-to-buffer b))))
 
-(add-hook 'haskell-mode-hook
-      (lambda ()
-        (ghc-init)))
+       ;; foreground color (yellow)
 
-(ac-define-source ghc-mod
-  '((depends ghc)
-    (candidates . (ghc-select-completion-symbol))
-    (symbol . "s")
-    (cache)))
+(display-time)
 
-(defun my-ac-haskell-mode ()
-  (setq ac-sources '(ac-source-words-in-same-mode-buffers
-             ac-source-dictionary
-             ac-source-ghc-mod)))
 
-(add-hook haskell-mode-hook 'my-ac-haskell-mode)
 
-(defun my-haskell-ac-init ()
-  (when (member (file-name-extension buffer-file-name) '("hs" "lhs"))
-    (auto-complete-mode t)
-    (setq ac-sources '(ac-source-words-in-same-mode-buffers
-               ac-source-dictionary
-               ac-source-ghc-mod))))
+;; erlang
 
-(add-hook 'find-file-hook 'my-haskell-ac-init)
+;; This is needed for Erlang mode setup
+(setq load-path (cons "/usr/local/Cellar/erlang/17.3/lib/erlang/lib/tools-2.7/emacs" load-path))
+(setq erlang-root-dir "/usr/local/Cellar/erlang/R16B03-1")
+(setq exec-path (cons "/usr/local/Cellar/erlang/R16B03-1/bin" exec-path))
+
+(require 'erlang-start)
 
 (provide 'init)
 
