@@ -19,6 +19,7 @@
                       sml-mode
                       haskell-mode
                       rainbow-delimiters
+                      color-theme-solarized
                       solarized-theme
                       ac-cider
                       auto-complete
@@ -51,8 +52,12 @@
                       ruby-mode
                       slim-mode
                       haml-mode
+                      elixir-mode
+                      idris-mode
+                      fsharp-mode
                       multiple-cursors
-                      dash))
+                      dash
+                      sublime-themes))
 
 (dolist (p site-packages)
   (unless (package-installed-p p)
@@ -63,43 +68,33 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
+
  '(company-ghc-show-info t)
- '(custom-enabled-themes (quote (smart-mode-line-dark monokai)))
+ '(custom-enabled-themes (quote (smart-mode-line-dark)))
   '(custom-safe-themes
     (quote
-     ("6a37be365d1d95fad2f4d185e51928c789ef7a4ccf17e7ca13ad63a8bf5b922f" "57f8801351e8b7677923c9fe547f7e19f38c99b80d68c34da6fa9b94dc6d3297" "3a727bdc09a7a141e58925258b6e873c65ccf393b2240c51553098ca93957723" default)))
+     ("6a37be365d1d95fad2f4d185e51928c789ef7a4ccf17e7ca13ad63a8bf5b922f" default)))
  '(haskell-process-auto-import-loaded-modules t)
  '(haskell-process-log t)
  '(haskell-process-suggest-remove-import-lines t)
  '(haskell-process-type (quote cabal-repl))
- '(haskell-tags-on-save t))
+ '(haskell-tags-on-save t)
+ '(send-mail-function nil))
 
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- )
+ '(default ((t (:background nil)))))
 
 (setenv "PATH" (concat (getenv "PATH") ":/usr/local/bin"))
 (setq exec-path (append exec-path '("/usr/local/bin")))
 
-;;(autoload 'ansi-color-for-comint-mode-on "ansi-color" nil t)
-;;(add-hook 'shell-mode-hook 'ansi-color-for-comint-mode-on)
-;;(load-library "ansi-color")
-;;(load-library "term")
-
-;; Fix junk characters in shell-mode
-;;
-;;(add-hook 'shell-mode-hook
-;;           'ansi-color-for-comint-mode-on
-              ;;            )
-
-(eval-after-load 'shell
-  '(progn
-     (autoload 'ansi-color-for-comint-mode-on "ansi-color" nil t)
-     (add-hook 'shell-mode-hook 'ansi-color-for-comint-mode-on t)
-     t))
+(sml/setup)
+(sml/apply-theme 'dark)
+(load-theme 'solarized-dark t)
+(load-theme 'junio t)
 
 (if window-system
     (tool-bar-mode -1))
@@ -112,14 +107,16 @@
 (global-linum-mode t)
 
 ;;add some padding between line numbers and text
-
 (defun linum-format-func (line)
   (let ((w (length (number-to-string (count-lines (point-min) (point-max))))))
      (propertize (format (format "%%%dd " w) line) 'face 'linum)))
 
 (setq linum-format 'linum-format-func)
 
-; (server-start)
+(require 'fsharp-mode)
+
+(setq inferior-fsharp-program "/usr/local/bin/fsharpi --readline-")
+(setq fsharp-compiler "/usr/local/bin/fsharpc")
 
 ;; haskell-mode cute symbols
 (setq haskell-font-lock-symbols t)
@@ -153,6 +150,14 @@
 (eval-after-load "auto-complete"
   '(add-to-list 'ac-modes 'cider-mode))
 
+;; enable flycheck global
+(add-hook 'after-init-hook #'global-flycheck-mode)
+
+;; flycheck-errors
+(eval-after-load 'flycheck
+  '(custom-set-variables
+    '(flycheck-display-errors-function #'flycheck-pos-tip-error-messages)))
+
 ;; Standard Jedi.el setting
 (add-hook 'python-mode-hook 'jedi:setup)
 (setq jedi:complete-on-dot t)
@@ -174,11 +179,7 @@
 
 ;;enable projectile mode
 (projectile-global-mode)
-;;(setq projectile-completion-system 'grizzl)
-
-(sml/setup)
-;;(load-theme 'solarized-dark t)
-
+(setq projectile-completion-system 'grizzl)
 
 ;; make typing overwrite text selection
 (delete-selection-mode t)
@@ -191,9 +192,6 @@
 
 ;; electric pair for lisp parens
 (electric-pair-mode t)
-
-;; new line and indent
-;;(define-key global-map (kbd "RET") 'newline-and-indent)
 
 ;; enable line numbers
 (global-linum-mode t)
@@ -215,19 +213,10 @@
 (add-hook 'haskell-mode-hook 'turn-on-haskell-indentation)
 ;;(add-hook 'haskell-mode-hook 'structured-haskell-mode)
 
-(add-hook 'haskell-mode-hook 'turn-on-hi2)
-
-;;(add-to-list 'load-path "~/.cabal/share/x86_64-osx-ghc-7.8.3/structured-haskell-mode-1.0.4/elisp")
-;;(require 'shm)
-;;(add-hook 'haskell-mode-hook 'structured-haskell-mode)
-;;(set-face-background 'shm-current-face "#eee8d5")
-;;(set-face-background 'shm-quarantine-face "lemonchiffon")
-
 (require 'auto-complete-config)
 (setq ac-delay 0.0)
 (setq ac-quick-help-delay 0.2)
 (ac-config-default)
-
 
 (require 'company)
 (add-hook 'haskell-mode-hook
@@ -264,12 +253,12 @@
 
 (autoload 'ghc-init "ghc" nil t)
 (autoload 'ghc-debug "ghc" nil t)
-(add-hook 'haskell-mode-hook (lambda () (ghc-init) (hare-init)))
+(add-hook 'haskell-mode-hook (lambda () (ghc-init)))
 
 (require 'purty-mode)
 (purty-add-pair '("\\(\\bfunction\\b\\)" . "ƒ"))
 (add-hook 'js-mode-hook #'purty-mode)
-(setq js-indent-level 4)
+(setq js-inden-level 4)
 
 (setq-default indent-tabs-mode nil)
 
@@ -281,48 +270,51 @@
 ;; Putry mode for haskell mode
 (add-hook 'haskell-mode-hook 'purty-mode)
 
+(setq display-time-day-and-date t
+      display-time-24hr-format t)
+
+(display-time)
+
+;; Erlang
+;; This is needed for Erlang mode setup
+(setq load-path (cons "/usr/local/Cellar/erlang/17.3/lib/erlang/lib/tools-2.7/emacs" load-path))
+(setq erlang-root-dir "/usr/local/Cellar/erlang/R16B03-1")
+(setq exec-path (cons "/usr/local/Cellar/erlang/R16B03-1/bin" exec-path))
+(require 'erlang-start)
+
+;; yasnipet
 (require 'yasnippet)
 (setq yas-snippet-dirs
       '("~/.emacs.d/custom/yasnippet/snippets"
       	"~/.emacs.d/elpa/haskell-mode-20141023.746/snippets"))
 
+;; scala mode
+(add-to-list 'load-path "~/.emacs.d/site-lisp/scala-mode")
+(require 'scala-mode-auto)
+
+;; sbt-mode
+(add-to-list 'load-path "~/.emacs.d/site-lisp/sbt-mode")
+(require 'sbt-mode)
+
+;; ensime mode
+(require 'scala-mode)
+(add-to-list 'auto-mode-alist '("\\.scala$" . scala-mode))
+(add-to-list 'load-path "~/.emacs.d/site-lisp/ensime-emacs")
+(require 'ensime)
+(add-hook 'scala-mode-hook 'ensime-scala-mode-hook)
+
+;; elm-mode
+(add-to-list 'load-path "~/.emacs.d/site-lisp/elm-mode")
+(require 'elm-mode)
+
 (yas-global-mode 1)
-;;(yas-expand-snippet )
+(add-hook 'python-mode-hook 'auto-complete-mode)
 
+(add-hook 'elm-mode-hook
+           (lambda () (local-set-key (kbd "C-j") #'newline-and-indent)))
 
-
-(require 'multi-term)
-(setq multi-term-program "/usr/local/bin/zsh")
-
-(defun last-term-buffer (l)
-      "Return most recently used term buffer."
-      (when l
-	(if (eq 'term-mode (with-current-buffer (car l) major-mode))
-	    (car l) (last-term-buffer (cdr l)))))
-
-(defun get-term ()
-   "Switch to the term buffer last used, or create a new one if
-    none exists, or if the current buffer is already a term."
-   (interactive)
-     (let ((b (last-term-buffer (buffer-list))))
-       (if (or (not b) (eq 'term-mode major-mode))
-           (multi-term)
-         (switch-to-buffer b))))
-
-       ;; foreground color (yellow)
-
-(display-time)
-
-
-
-;; erlang
-
-;; This is needed for Erlang mode setup
-(setq load-path (cons "/usr/local/Cellar/erlang/17.3/lib/erlang/lib/tools-2.7/emacs" load-path))
-(setq erlang-root-dir "/usr/local/Cellar/erlang/R16B03-1")
-(setq exec-path (cons "/usr/local/Cellar/erlang/R16B03-1/bin" exec-path))
-
-(require 'erlang-start)
+(add-hook 'before-save-hook
+           'delete-trailing-whitespace)
 
 (provide 'init)
 
