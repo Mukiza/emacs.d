@@ -57,7 +57,10 @@
                       fsharp-mode
                       multiple-cursors
                       dash
-                      sublime-themes))
+                      sublime-themes
+                      tuareg
+                      rust-mode
+                      flycheck-rust))
 
 (dolist (p site-packages)
   (unless (package-installed-p p)
@@ -90,6 +93,8 @@
 
 (setenv "PATH" (concat (getenv "PATH") ":/usr/local/bin"))
 (setq exec-path (append exec-path '("/usr/local/bin")))
+
+;;;(setenv "ESHELL" (expand-file-name "/usr/local/bin/eshell"))
 
 (sml/setup)
 (sml/apply-theme 'dark)
@@ -315,6 +320,20 @@
 
 (add-hook 'before-save-hook
            'delete-trailing-whitespace)
+
+;; julia-mode
+(add-to-list 'load-path "~/.emacs.d/site-lisp/julia-mode")
+(require 'julia-mode)
+
+;; use purty mode for julia
+(add-hook 'julia-mode-hook 'purty-mode)
+
+(add-to-list 'load-path "~/.emacs.d/site-lisp/rust-mode/")
+(autoload 'rust-mode "rust-mode" nil t)
+(add-to-list 'auto-mode-alist '("\\.rs\\'" . rust-mode))
+
+(eval-after-load 'flycheck
+  '(add-hook 'flycheck-mode-hook #'flycheck-rust-setup))
 
 (provide 'init)
 
