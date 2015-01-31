@@ -42,7 +42,7 @@
                       flycheck
                       flycheck-color-mode-line
                       flycheck-hdevtools
-                      flymake-jslint
+                      flycheck-pos-tip
                       android-mode
                       jedi
                       expand-region
@@ -71,12 +71,12 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
-
  '(company-ghc-show-info t)
  '(custom-enabled-themes (quote (smart-mode-line-dark)))
   '(custom-safe-themes
     (quote
-     ("6a37be365d1d95fad2f4d185e51928c789ef7a4ccf17e7ca13ad63a8bf5b922f" default)))
+     ("8db4b03b9ae654d4a57804286eb3e332725c84d7cdab38463cb6b97d5762ad26" "6a37be365d1d95fad2f4d185e51928c789ef7a4ccf17e7ca13ad63a8bf5b922f" default)))
+ '(flycheck-display-errors-function (function flycheck-pos-tip-error-messages))
  '(haskell-process-auto-import-loaded-modules t)
  '(haskell-process-log t)
  '(haskell-process-suggest-remove-import-lines t)
@@ -98,7 +98,7 @@
 
 (sml/setup)
 (sml/apply-theme 'dark)
-(load-theme 'solarized-dark t)
+;;(load-theme 'solarized-dark t)
 (load-theme 'junio t)
 
 (if window-system
@@ -279,61 +279,6 @@
       display-time-24hr-format t)
 
 (display-time)
-
-;; Erlang
-;; This is needed for Erlang mode setup
-(setq load-path (cons "/usr/local/Cellar/erlang/17.3/lib/erlang/lib/tools-2.7/emacs" load-path))
-(setq erlang-root-dir "/usr/local/Cellar/erlang/R16B03-1")
-(setq exec-path (cons "/usr/local/Cellar/erlang/R16B03-1/bin" exec-path))
-(require 'erlang-start)
-
-;; yasnipet
-(require 'yasnippet)
-(setq yas-snippet-dirs
-      '("~/.emacs.d/custom/yasnippet/snippets"
-      	"~/.emacs.d/elpa/haskell-mode-20141023.746/snippets"))
-
-;; scala mode
-(add-to-list 'load-path "~/.emacs.d/site-lisp/scala-mode")
-(require 'scala-mode-auto)
-
-;; sbt-mode
-(add-to-list 'load-path "~/.emacs.d/site-lisp/sbt-mode")
-(require 'sbt-mode)
-
-;; ensime mode
-(require 'scala-mode)
-(add-to-list 'auto-mode-alist '("\\.scala$" . scala-mode))
-(add-to-list 'load-path "~/.emacs.d/site-lisp/ensime-emacs")
-(require 'ensime)
-(add-hook 'scala-mode-hook 'ensime-scala-mode-hook)
-
-;; elm-mode
-(add-to-list 'load-path "~/.emacs.d/site-lisp/elm-mode")
-(require 'elm-mode)
-
-(yas-global-mode 1)
-(add-hook 'python-mode-hook 'auto-complete-mode)
-
-(add-hook 'elm-mode-hook
-           (lambda () (local-set-key (kbd "C-j") #'newline-and-indent)))
-
-(add-hook 'before-save-hook
-           'delete-trailing-whitespace)
-
-;; julia-mode
-(add-to-list 'load-path "~/.emacs.d/site-lisp/julia-mode")
-(require 'julia-mode)
-
-;; use purty mode for julia
-(add-hook 'julia-mode-hook 'purty-mode)
-
-(add-to-list 'load-path "~/.emacs.d/site-lisp/rust-mode/")
-(autoload 'rust-mode "rust-mode" nil t)
-(add-to-list 'auto-mode-alist '("\\.rs\\'" . rust-mode))
-
-(eval-after-load 'flycheck
-  '(add-hook 'flycheck-mode-hook #'flycheck-rust-setup))
 
 (provide 'init)
 
