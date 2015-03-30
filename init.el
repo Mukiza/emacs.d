@@ -13,54 +13,65 @@
 (when (not package-archive-contents)
   (package-refresh-contents))
 
-(defvar site-packages '(projectile
-                      clojure-mode
-                      cider
-                      sml-mode
-                      haskell-mode
-                      rainbow-delimiters
-                      color-theme-solarized
-                      solarized-theme
-                      ac-cider
-                      auto-complete
-                      company
-                      paredit
-                      popup
-                      smart-mode-line
-                      clojure-snippets
-                      clojure-cheatsheet
-                      clj-refactor
-                      magit
-                      magit-push-remote
-                      grizzl
-                      evil
-                      nodejs-repl
-                      midje-mode
-                      auto-complete
-                      ghci-completion
-                      ghc
-                      flycheck
-                      flycheck-color-mode-line
-                      flycheck-hdevtools
-                      flycheck-pos-tip
-                      android-mode
-                      jedi
-                      expand-region
-                      web-beautify
-                      purty-mode
-                      yasnippet
-                      ruby-mode
-                      slim-mode
-                      haml-mode
-                      elixir-mode
-                      idris-mode
-                      fsharp-mode
-                      multiple-cursors
-                      dash
-                      sublime-themes
-                      tuareg
-                      rust-mode
-                      flycheck-rust))
+(defvar site-packages '(ac-cider
+                        android-mode
+                        auto-complete
+                        auto-complete
+                        cider
+                        clj-refactor
+                        clojure-cheatsheet
+                        clojure-mode
+                        clojure-snippets
+                        color-theme-solarized
+                        company
+                        company-irony
+                        dash
+                        django-mode
+                        elixir-mode
+                        emms
+                        emms-soundcloud
+                        evil
+                        expand-region
+                        feature-mode
+                        flycheck
+                        flycheck-color-mode-line
+                        flycheck-hdevtools
+                        flycheck-pos-tip
+                        flycheck-rust
+                        flymake-jslint
+                        fsharp-mode
+                        ghc
+                        ghci-completion
+                        grizzl
+                        haml-mode
+                        haskell-mode
+                        idris-mode
+                        jedi
+                        js3-mode
+                        magit
+                        magit-push-remote
+                        midje-mode
+                        multiple-cursors
+                        nodejs-repl
+                        paredit
+                        popup
+                        pony-mode
+                        projectile
+                        python-django
+                        purty-mode
+                        rainbow-delimiters
+                        ruby-mode
+                        ruby-electric
+                        rust-mode
+                        slim-mode
+                        smart-mode-line
+                        sml-mode
+                        solarized-theme
+                        sublime-themes
+                        tuareg
+                        web-beautify
+                        yaml-mode
+                        yasnippet))
 
 (dolist (p site-packages)
   (unless (package-installed-p p)
@@ -71,18 +82,23 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(company-ghc-show-info t)
- '(custom-enabled-themes (quote (smart-mode-line-dark)))
-  '(custom-safe-themes
-    (quote
-     ("8db4b03b9ae654d4a57804286eb3e332725c84d7cdab38463cb6b97d5762ad26" "6a37be365d1d95fad2f4d185e51928c789ef7a4ccf17e7ca13ad63a8bf5b922f" default)))
- '(flycheck-display-errors-function (function flycheck-pos-tip-error-messages))
- '(haskell-process-auto-import-loaded-modules t)
- '(haskell-process-log t)
- '(haskell-process-suggest-remove-import-lines t)
- '(haskell-process-type (quote cabal-repl))
- '(haskell-tags-on-save t)
- '(send-mail-function nil))
+    '(company-ghc-show-info t)
+     '(js3-auto-indent-p t)
+      '(js3-enter-indents-newline t)
+       '(js3-indent-on-enter-key t)
+       '(custom-enabled-themes (quote (smart-mode-line-dark)))
+       '(custom-safe-themes
+         (quote
+          ("8db4b03b9ae654d4a57804286eb3e332725c84d7cdab38463cb6b97d5762ad26"
+           "6a37be365d1d95fad2f4d185e51928c789ef7a4ccf17e7ca13ad63a8bf5b922f" default)))
+
+     '(flycheck-display-errors-function (function flycheck-pos-tip-error-messages))
+        '(haskell-process-auto-import-loaded-modules t)
+          '(haskell-process-log t)
+           '(haskell-process-suggest-remove-import-lines t)
+            '(haskell-process-type (quote cabal-repl))
+             '(haskell-tags-on-save t)
+              '(send-mail-function nil))
 
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
@@ -95,7 +111,6 @@
 (setq exec-path (append exec-path '("/usr/local/bin")))
 
 ;;;(setenv "ESHELL" (expand-file-name "/usr/local/bin/eshell"))
-
 (sml/setup)
 (sml/apply-theme 'dark)
 ;;(load-theme 'solarized-dark t)
@@ -125,6 +140,7 @@
 
 ;; haskell-mode cute symbols
 (setq haskell-font-lock-symbols t)
+(setq js3-consistent-level-indent-inner-bracket t)
 
 ;; clojure rainbow delimeters
 (add-hook 'clojure-mode-hook 'rainbow-delimiters-mode)
@@ -215,7 +231,8 @@
 
 (setq haskell-font-lock-symbols t)
 
-(add-hook 'haskell-mode-hook 'turn-on-haskell-indentation)
+(add-hook 'haskell-mode-hook 'turn-on-haskell-simple-indent)
+
 ;;(add-hook 'haskell-mode-hook 'structured-haskell-mode)
 
 (require 'auto-complete-config)
@@ -262,7 +279,7 @@
 
 (require 'purty-mode)
 (purty-add-pair '("\\(\\bfunction\\b\\)" . "ƒ"))
-(add-hook 'js-mode-hook #'purty-mode)
+(add-hook 'js3-mode-hook #'purty-mode)
 (setq js-inden-level 4)
 
 (setq-default indent-tabs-mode nil)
@@ -278,8 +295,107 @@
 (setq display-time-day-and-date t
       display-time-24hr-format t)
 
+(add-to-list 'load-path
+              "~/.emacs.d/plugins/yasnippet")
+(require 'yasnippet)
+(yas-global-mode 1)
+
+(setq yas/triggers-in-field t)
+
 (display-time)
 
+(defun duplicate-line ()
+  (interactive)
+  (move-beginning-of-line 1)
+  (kill-line)
+  (yank)
+  (open-line t)
+  (forward-line t)
+  (yank))
+
+(global-set-key (kbd "C-d") 'duplicate-line)
+
+;; add some shotcuts in popup menu mode
+(define-key popup-menu-keymap (kbd "M-n") 'popup-next)
+(define-key popup-menu-keymap (kbd "TAB") 'popup-next)
+(define-key popup-menu-keymap (kbd "<tab>") 'popup-next)
+(define-key popup-menu-keymap (kbd "<backtab>") 'popup-previous)
+(define-key popup-menu-keymap (kbd "M-p") 'popup-previous)
+
+(defun yas-popup-isearch-prompt (prompt choices &optional display-fn)
+  (when (featurep 'popup)
+    (popup-menu*
+     (mapcar
+      (lambda (choice)
+        (popup-make-item
+         (or (and display-fn (funcall display-fn choice)) choice) :value choice))
+      choices)
+     :prompt prompt
+     ;; start isearch mode immediately
+     :isearch t
+     )))
+
+(setq yas-prompt-functions
+      '(yas-popup-isearch-prompt yas-ido-prompt yas-no-prompt))
+
+(load "server")
+(unless (server-running-p) (server-start))
+
+(require 'emms-setup)
+(require 'emms-player-mplayer)
+
+(emms-standard)
+(emms-default-players)
+(define-emms-simple-player mplayer '(file url)
+      (regexp-opt '(".ogg" ".mp3" ".wav" ".mpg" ".mpeg" ".wmv" ".wma"
+                    ".mov" ".avi" ".divx" ".ogm" ".asf" ".mkv" "http://" "mms://"
+                    ".rm" ".rmvb" ".mp4" ".flac" ".vob" ".m4a" ".flv" ".ogv" ".pls"))
+      "mplayer" "-slave" "-quiet" "-really-quiet" "-fullscreen")
+
+(add-hook 'emms-player-started-hook 'emms-show)
+(setq emms-show-format "NP: %s")
+
+
+(eval-after-load 'js3-mode
+  '(add-hook 'js3-mode-hook
+    (lambda ()
+      (add-hook 'before-save-hook 'web-beautify-js-buffer t t))))
+
+(eval-after-load 'json-mode
+  '(add-hook 'json-mode-hook
+    (lambda ()
+      (add-hook 'before-save-hook 'web-beautify-js-buffer t t))))
+
+(eval-after-load 'sgml-mode
+  '(add-hook 'html-mode-hook
+    (lambda ()
+      (add-hook 'before-save-hook 'web-beautify-html-buffer t t))))
+
+(eval-after-load 'css-mode
+  '(add-hook 'css-mode-hook
+    (lambda ()
+      (add-hook 'before-save-hook 'web-beautify-css-buffer t t))))
+
+;; store all backup and autosave files in the tmp dir
+(setq backup-directory-alist
+      `((".*" . ,temporary-file-directory)))
+
+(setq auto-save-file-name-transforms
+      `((".*" ,temporary-file-directory t)))
+
+(add-hook 'before-save-hook
+           (lambda () (delete-trailing-whitespace)))
+
+
+(add-to-list 'auto-mode-alist '("\\.html$" . django-html-mode))
+(require 'multiple-cursors)
+
+(global-set-key (kbd "C-c C-d") 'mc/mark-next-like-this)
+(global-set-key (kbd "C-c C-p") 'mc/mark-previous-like-this)
+(global-set-key (kbd "C-c C-a") 'mc/mark-all-like-this)
+
+
 (provide 'init)
+
 
 ;;; init.el ends here
