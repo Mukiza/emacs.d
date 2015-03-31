@@ -1,1 +1,7 @@
 !*.el
+abbrev_defs
+*.dat
+elpa/
+emms/
+ido.last
+*.eld
