@@ -82,23 +82,25 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
-    '(company-ghc-show-info t)
-     '(js3-auto-indent-p t)
-      '(js3-enter-indents-newline t)
-       '(js3-indent-on-enter-key t)
-       '(custom-enabled-themes (quote (smart-mode-line-dark)))
-       '(custom-safe-themes
-         (quote
-          ("8db4b03b9ae654d4a57804286eb3e332725c84d7cdab38463cb6b97d5762ad26"
-           "6a37be365d1d95fad2f4d185e51928c789ef7a4ccf17e7ca13ad63a8bf5b922f" default)))
-
-     '(flycheck-display-errors-function (function flycheck-pos-tip-error-messages))
-        '(haskell-process-auto-import-loaded-modules t)
-          '(haskell-process-log t)
-           '(haskell-process-suggest-remove-import-lines t)
-            '(haskell-process-type (quote cabal-repl))
-             '(haskell-tags-on-save t)
-              '(send-mail-function nil))
+ '(company-ghc-show-info t)
+ '(custom-enabled-themes (quote (smart-mode-line-dark)))
+  '(custom-safe-themes
+    (quote
+     ("3c83b3676d796422704082049fc38b6966bcad960f896669dfc21a7a37a748fa")))
+ '(flycheck-display-errors-function (function flycheck-pos-tip-error-messages))
+ '(haskell-process-auto-import-loaded-modules t)
+ '(haskell-process-log t)
+ '(haskell-process-suggest-remove-import-lines t)
+ '(haskell-process-type (quote cabal-repl))
+ '(haskell-tags-on-save t)
+ '(js3-auto-indent-p t)
+ '(js3-enter-indents-newline t)
+ '(js3-indent-on-enter-key t)
+ '(linum-format " %7i ")
+  '(package-selected-packages
+    (quote
+     (color-theme-monokai yaml-mode ruby-electric python-django pony-mode js3-mode flycheck-pos-tip feature-mode emms-soundcloud emms django-mode company-irony web-beautify tuareg sublime-themes solarized-theme sml-mode smart-mode-line slim-mode rust-mode rainbow-delimiters purty-mode projectile nodejs-repl midje-mode magit-push-remote jedi idris-mode haskell-mode haml-mode grizzl ghci-completion ghc fsharp-mode flymake-jslint flycheck-rust flycheck-hdevtools flycheck-color-mode-line expand-region evil elixir-mode company color-theme-solarized clojure-snippets clojure-cheatsheet clj-refactor android-mode ac-cider)))
+ '(send-mail-function nil))
 
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
@@ -111,10 +113,8 @@
 (setq exec-path (append exec-path '("/usr/local/bin")))
 
 ;;;(setenv "ESHELL" (expand-file-name "/usr/local/bin/eshell"))
-(sml/setup)
-(sml/apply-theme 'dark)
-;;(load-theme 'solarized-dark t)
-(load-theme 'junio t)
+
+;;(load-theme 'junio t)
 
 (if window-system
     (tool-bar-mode -1))
@@ -139,7 +139,7 @@
 (setq fsharp-compiler "/usr/local/bin/fsharpc")
 
 ;; haskell-mode cute symbols
-(setq haskell-font-lock-symbols t)
+;;(setq haskell-font-lock-symbols t)
 (setq js3-consistent-level-indent-inner-bracket t)
 
 ;; clojure rainbow delimeters
@@ -228,8 +228,7 @@
 (ido-mode t)
 
 ;; haskell-mode cute symbols
-
-(setq haskell-font-lock-symbols t)
+;;(setq haskell-font-lock-symbols t)
 
 (add-hook 'haskell-mode-hook 'turn-on-haskell-simple-indent)
 
