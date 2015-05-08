@@ -48,6 +48,7 @@
                         idris-mode
                         jedi
                         js3-mode
+                        let-alist
                         magit
                         magit-push-remote
                         midje-mode
@@ -112,9 +113,15 @@
 (setenv "PATH" (concat (getenv "PATH") ":/usr/local/bin"))
 (setq exec-path (append exec-path '("/usr/local/bin")))
 
+
 ;;;(setenv "ESHELL" (expand-file-name "/usr/local/bin/eshell"))
 
 ;;(load-theme 'junio t)
+
+(sml/setup)
+(sml/apply-theme 'dark)
+;;(load-theme 'solarized-dark t)
+(load-theme 'junio t)
 
 (if window-system
     (tool-bar-mode -1))
