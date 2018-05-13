@@ -1,0 +1,71 @@
+"General
+Plug 'bling/vim-bufferline'
+Plug 'davidhalter/jedi-vim'
+Plug 'ervandew/supertab'
+Plug 'honza/vim-snippets'
+Plug 'itchyny/lightline.vim'
+Plug 'kien/ctrlp.vim'
+Plug 'easymotion/vim-easymotion'
+Plug 'majutsushi/tagbar'
+Plug 'mhinz/vim-startify'
+Plug 'scrooloose/nerdtree'
+Plug 'scrooloose/syntastic'
+Plug 'terryma/vim-expand-region'
+Plug 'thinca/vim-quickrun'
+Plug 'Townk/vim-autoclose'
+Plug 'tpope/vim-commentary'
+Plug 'tpope/vim-fugitive'
+Plug 'tpope/vim-markdown'
+Plug 'tpope/vim-surround'
+Plug 'tpope/vim-abolish'
+Plug 'tpope/vim-repeat'
+Plug 'vim-scripts/ctags.vim'
+
+"Ruby & Rails
+Plug 'vim-ruby/vim-ruby'
+Plug 'thoughtbot/vim-rspec'
+Plug 'tpope/vim-endwise'
+Plug 'tpope/vim-rake'
+
+"Haml & Html
+Plug 'bitfyre/vim-indent-html'
+Plug 'hail2u/vim-css3-syntax'
+
+"Python
+Plug 'klen/python-mode'
+Plug 'vim-scripts/vim-python-virtualenv'
+Plug 'phillipberndt/python-imports.vim'
+Plug 'andviro/flake8-vim'
+
+" JavaScript
+Plug 'pangloss/vim-javascript'
+Plug 'vim-scripts/node'
+Plug 'joestelmach/lint.vim'
+Plug 'godlygeek/tabular'
+Plug 'elzr/vim-json'
+
+"Clojure
+Plug 'tpope/vim-fireplace', { 'for': 'clojure' }
+Plug 'tpope/vim-classpath', { 'for': 'clojure'}
+Plug 'vim-scripts/VimClojure', { 'for': 'clojure'}
+Plug 'kovisoft/paredit', { 'for': ['clojure', 'scheme'] }
+Plug 'kovisoft/slimv'
+
+"Haskel
+Plug 'vim-scripts/haskell.vim'
+Plug 'bitc/vim-hdevtools'
+Plug 'vim-scripts/indenthaskell.vim'
+Plug 'Twinside/vim-hoogle'
+Plug 'vim-scripts/Haskell-Conceal'
+Plug 'Twinside/vim-haskellFold'
+Plug 'eagletmt/neco-ghc'
+
+"Php
+Plug 'StanAngeloff/php.vim'
+Plug 'blueyed/smarty.vim'
+
+"Go Lang
+Plug 'fatih/vim-go'
+
+"Terraform
+Plug 'hashivim/vim-terraform'
