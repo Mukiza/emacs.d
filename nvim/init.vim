@@ -1,21 +1,8 @@
-" Minimal Configuration
-set nocompatible
+"Load all plugins
+source './plugins.vim'
+
 syntax on
 filetype plugin indent on
-
-call plug#begin('~/.local/share/nvim/plugged')
-
-" (Optinal) for Tag Sidebar
-" Plug 'majutsushi/tagbar'
-
-Plug 'hashivim/vim-terraform'
-Plug 'vim-syntastic/syntastic'
-Plug 'juliosueiras/vim-terraform-completion'
-Plug 'joshdick/onedark.vim'
-Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
-Plug 'Shougo/denite.nvim', { 'do': 'UpdateRemotePlugins' }
-Plug 'itchyny/lightline.vim'
-call plug#end()
 
 " Syntastic Config
 set statusline+=%#warningmsg#
@@ -49,8 +36,6 @@ let g:deoplete#enable_at_startup = 1
 call deoplete#initialize()
 
 """ Syntax highlighting {{{
-syntax on
-filetype plugin indent on                   " detect file plugin+indent
 set t_Co=256                                " 256-colors
 set background=dark                         " we're using a dark bg
 colorscheme onedark
@@ -60,11 +45,6 @@ highlight LineNr ctermbg=NONE               " use terminal background
 highlight SignColumn ctermbg=NONE           " use terminal background
 highlight CursorLine ctermbg=235            " a slightly lighter line
 au BufRead,BufNewFile *.txt set ft=sh       " opens .txt w/highlight
-
-""" Tab colors, overwritten by lightline(?) {{{
-    "hi TabLineFill ctermfg=NONE ctermbg=233
-    "hi TabLine ctermfg=241 ctermbg=233
-    "hi TabLineSel ctermfg=250 ctermbg=233
 
 set cursorline                              " hilight cursor line
 set more                                    " ---more--- like less
@@ -100,7 +80,6 @@ set shortmess+=I                                " disable startup message
 set splitbelow                                  " splits go below w/focus
 set splitright                                  " vsplits go right w/focus
 set ttyfast                                     " for faster redraws etc
-"set ttymouse=xterm2                             " experimental
 
 """ Folding
 set foldcolumn=0                            " hide folding column
@@ -276,15 +255,6 @@ let g:syntastic_mode_map = {
 " Automatically remove preview window after autocomplete (mainly for clang_complete)
 autocmd CursorMovedI * if pumvisible() == 0|pclose|endif
 autocmd InsertLeave * if pumvisible() == 0|pclose|endif
-
-let g:PyFlakeOnWrite = 1
-let g:PyFlakeCheckers = 'pep8,mccabe,pyflakes'
-let g:PyFlakeCWindow = 6
-
-let g:vimclojure#HighlightBuiltins = 1
-let g:vimclojure#ParenRainbow = 1
-
-autocmd FileType clojure nnoremap <silent><buffer> cpr :Require \| ClojureHighlightReferences<CR>
 
 "------  Fugitive  ------
 nnoremap <Leader>gs :Gstatus<CR>
