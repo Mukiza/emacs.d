@@ -5,3 +5,4 @@ elpa/
 emms/
 ido.last
 *.eld
+**/*.DS_Store
